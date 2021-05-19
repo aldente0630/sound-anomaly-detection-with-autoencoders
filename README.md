@@ -13,5 +13,8 @@
 ### Mel-Spectrograms
 ![mel_spectograms](./img/mel_spectrograms.svg)
 ### Multiple Frames of Spectrograms
-![multiple_frames_1](./img/multiple_frames_1.svg)
-![multiple_frames_2](./img/multiple_frames_2.svg)
+![normal_frames](./img/normal_frames.svg)
+![abnormal_frames](./img/abnormal_frames.svg)
+
+![model_loss](./img/model_loss.svg)
+![recon_error_dist](./img/recon_error_dist.svg)
