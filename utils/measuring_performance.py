@@ -1,7 +1,9 @@
+import itertools
 import numpy as np
 from bokeh.io import export_svgs
 from bokeh.plotting import figure, show
-from bokeh.models import Band, ColumnDataSource, HoverTool, NumeralTickFormatter
+from bokeh.models import Band, ColumnDataSource, HoverTool, LinearColorMapper, NumeralTickFormatter
+from bokeh.models.annotations import Label
 from collections.abc import Iterable
 
 
@@ -18,6 +20,46 @@ def get_histogram(score, bins=30):
     histogram['interval'] = ['{0:.2f} to {1:.2f}'.format(left, right)
                              for left, right in zip(histogram['left'], histogram['right'])]
     return histogram
+
+
+def plot_confusion_matrix(conf_mat, model_name, file_name):
+    if model_name is None:
+        model_name = ''
+    else:
+        model_name += ' - '
+
+    p = figure(plot_width=330, plot_height=300, title='{}Confusion Matrix'.format(model_name),
+               x_axis_label='True Class', y_axis_label='Predicted Class')
+
+    mapper = LinearColorMapper(palette='Greys256', low=conf_mat.min(), high=conf_mat.max())
+    source = ColumnDataSource(dict(true_class=[0, 1, 0, 1], predicted_class=[0, 0, 1, 1], n_samples=conf_mat.flatten()))
+
+    p.rect(x='true_class', y='predicted_class', fill_color={'field': 'n_samples', 'transform': mapper},
+           width=1, height=1, alpha=0.6, line_color='white', line_width=1.5, source=source)
+
+    for (x, y) in itertools.product([0, 1], [0, 1]):
+        n_samples = str(conf_mat[x, y])
+        x_offset = -3.5 - len(n_samples)
+        text_color = 'black' if (conf_mat[x, y] - conf_mat.min()) / (conf_mat.max() - conf_mat.min()) > 0.5 else 'white'
+
+        label = Label(x=x, y=y, x_offset=x_offset, text=n_samples, text_baseline='middle', text_color=text_color,
+                      text_font_size='10px', text_font_style='bold')
+        p.add_layout(label)
+
+    p.grid.grid_line_color = None
+    p.axis.axis_line_color = None
+    p.axis.major_tick_line_color = None
+    p.axis.minor_tick_line_color = None
+    p.xaxis.ticker = [0, 1]
+    p.xaxis.major_label_overrides = {0: 'False', 1: 'True'}
+    p.yaxis.ticker = [0, 1]
+    p.yaxis.major_label_overrides = {0: 'False', 1: 'True'}
+    p.title.align = 'center'
+    show(p)
+
+    if file_name is not None:
+        p.output_backend = 'svg'
+        _ = export_svgs(p, filename=file_name)
 
 
 def plot_histogram_by_class(score_false, score_true, bins=30, model_name=None, file_name=None):
@@ -93,7 +135,7 @@ def plot_pr_curve(pr_curve, auprc, model_name=None, file_name=None):
     else:
         model_name += ' - '
 
-    p = figure(plot_width=600, plot_height=400, title='{} - Precision Recall Curve'.format(model_name),
+    p = figure(plot_width=600, plot_height=400, title='{}Precision Recall Curve'.format(model_name),
                x_axis_label='Recall', y_axis_label='Precision')
 
     source = dict(zip(['recall', 'precision', 'thr'], pr_curve))
