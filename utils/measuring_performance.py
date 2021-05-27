@@ -26,7 +26,7 @@ def plot_confusion_matrix(conf_mat, model_name, file_name):
     if model_name is None:
         model_name = ''
     else:
-        model_name += ' - '
+        model_name += ': '
 
     p = figure(plot_width=330, plot_height=300, title='{}Confusion Matrix'.format(model_name),
                x_axis_label='True Class', y_axis_label='Predicted Class')
@@ -68,7 +68,7 @@ def plot_histogram_by_class(score_false, score_true, bins=30, model_name=None, f
     if model_name is None:
         model_name = ''
     else:
-        model_name += ' - '
+        model_name += ': '
         
     p = figure(plot_width=600, plot_height=400,
                title='{}Reconstruction Error Distribution'.format(model_name),
@@ -104,7 +104,7 @@ def plot_loss_per_epoch(history, model_name=None, file_name=None):
     if model_name is None:
         model_name = ''
     else:
-        model_name += ' - '
+        model_name += ': '
         
     p = figure(plot_width=600, plot_height=400, title='{}Loss per Epoch'.format(model_name),
                x_axis_label='# Epochs', y_axis_label='Loss')
@@ -133,9 +133,9 @@ def plot_pr_curve(pr_curve, auprc, model_name=None, file_name=None):
     if model_name is None:
         model_name = ''
     else:
-        model_name += ' - '
+        model_name += ': '
 
-    p = figure(plot_width=600, plot_height=400, title='{}Precision Recall Curve'.format(model_name),
+    p = figure(plot_width=600, plot_height=400, title='{}Precision - Recall Curve'.format(model_name),
                x_axis_label='Recall', y_axis_label='Precision')
 
     source = dict(zip(['recall', 'precision', 'thr'], pr_curve))
@@ -167,7 +167,7 @@ def plot_roc_curve(roc_curve, auroc, model_name=None, file_name=None):
     if model_name is None:
         model_name = ''
     else:
-        model_name += ' - '
+        model_name += ': '
 
     p = figure(plot_width=600, plot_height=400, title='{}ROC Curve'.format(model_name),
                x_axis_label='False Positive Rate', y_axis_label='True Positive Rate')
