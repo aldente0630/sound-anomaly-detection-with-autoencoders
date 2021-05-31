@@ -5,19 +5,24 @@
 
 ## Exploratory Data Analysis
 ### Wave Forms
-![wave_forms](./img/wave_forms.svg)
+![wave forms](./img/wave_forms.svg)
 ### Short Time Fourier Transform
-![short_time_fourier_transform](./img/stft.svg)
+![short time fourier transform](./img/stft.svg)
 ### Spectrograms (dB Scale)
 ![spectrograms](./img/spectrograms.svg)
 ### Mel-Spectrograms
-![mel_spectograms](./img/mel_spectrograms.svg)
+![mel-spectograms](./img/mel_spectrograms.svg)
 ### Multiple Frames of Spectrograms
-![normal_frames](./img/normal_frames.svg)
-![abnormal_frames](./img/abnormal_frames.svg)
+![normal frames](./img/normal_frames.svg)
+![abnormal frames](./img/abnormal_frames.svg)
 
-![model_loss](./img/ae_model_loss.svg)  
-![recon_error_dist](./img/ae_recon_error_dist.svg)
+![model loss](./img/model_loss.svg)    
+![reconstuction error distribution](./img/recon_error_dist.svg)  
+![threshold range exploration](./img/thr_range_expl.svg)  
+![best range exploration](./img/best_thr_expl.svg)  
+![confusion matrix](./img/conf_mat.svg)  
+![roc curve](./img/roc_curve.svg)  
+![pr curve](./img/pr_curve.svg)  
 
 ### References
 * [MIMII Dataset: Sound Dataset for Malfunctioning Industrial Machine Investigation and Inspection](https://zenodo.org/record/3384388#.YKiRwy-UEh8)
