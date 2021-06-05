@@ -18,8 +18,8 @@
 
 ![model loss](./img/model_loss.svg)    
 ![reconstuction error distribution](./img/recon_error_dist.svg)  
-![threshold range exploration](./img/thr_range_expl.svg)  
-![best range exploration](./img/best_thr_expl.svg)  
+![threshold range exploration](./img/thr_range_exp.svg)  
+![best range exploration](./img/best_thr_exp.svg)  
 ![confusion matrix](./img/conf_mat.svg)  
 ![roc curve](./img/roc_curve.svg)  
 ![pr curve](./img/pr_curve.svg)  

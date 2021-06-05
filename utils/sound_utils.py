@@ -30,10 +30,10 @@ def generate_dataset(files_list, n_fft=1024, hop_length=512, n_mels=64, frames=5
     dims = n_mels * frames
 
     for index in tqdm(range(len(files_list))):
-        signal, sampling_rate = load_sound_file(files_list[index])
+        signal, sr = load_sound_file(files_list[index])
         features = extract_signal_features(
             signal,
-            sampling_rate,
+            sr,
             n_fft=n_fft,
             hop_length=hop_length,
             n_mels=n_mels,
@@ -51,10 +51,10 @@ def generate_dataset(files_list, n_fft=1024, hop_length=512, n_mels=64, frames=5
 
 
 def load_sound_file(path, mono=False, channel=0):
-    signal, sampling_rate = librosa.load(path, sr=None, mono=mono)
+    signal, sr = librosa.load(path, sr=None, mono=mono)
     if signal.ndim < 2:
-        sound_file = signal, sampling_rate
+        sound_file = signal, sr
     else:
-        sound_file = signal[channel, :], sampling_rate
+        sound_file = signal[channel, :], sr
 
     return sound_file

@@ -1,4 +1,5 @@
 import itertools
+from collections.abc import Iterable
 import numpy as np
 from bokeh.io import export_svgs
 from bokeh.plotting import figure, show
@@ -10,7 +11,6 @@ from bokeh.models import (
     NumeralTickFormatter,
 )
 from bokeh.models.annotations import Label
-from collections.abc import Iterable
 
 
 def get_prediction(score, threshold=0.5):
