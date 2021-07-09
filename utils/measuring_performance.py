@@ -38,7 +38,7 @@ def plot_confusion_matrix(conf_mat, model_name=None, file_name=None):
     else:
         model_name += ": "
 
-    plot = figure(
+    p = figure(
         plot_width=330,
         plot_height=300,
         title=f"{model_name}Confusion Matrix",
@@ -57,7 +57,7 @@ def plot_confusion_matrix(conf_mat, model_name=None, file_name=None):
         )
     )
 
-    plot.rect(
+    p.rect(
         x="true_class",
         y="predicted_class",
         fill_color={"field": "n_samples", "transform": mapper},
@@ -90,44 +90,46 @@ def plot_confusion_matrix(conf_mat, model_name=None, file_name=None):
             text_font_size="10px",
             text_font_style="bold",
         )
-        plot.add_layout(label)
+        p.add_layout(label)
 
-    plot.grid.grid_line_color = None
-    plot.axis.axis_line_color = None
-    plot.axis.major_tick_line_color = None
-    plot.axis.minor_tick_line_color = None
-    plot.xaxis.ticker = [0, 1]
-    plot.xaxis.major_label_overrides = {0: "False", 1: "True"}
-    plot.yaxis.ticker = [0, 1]
-    plot.yaxis.major_label_overrides = {0: "False", 1: "True"}
-    plot.title.align = "center"
-    show(plot)
+    p.grid.grid_line_color = None
+    p.axis.axis_line_color = None
+    p.axis.major_tick_line_color = None
+    p.axis.minor_tick_line_color = None
+    p.xaxis.ticker = [0, 1]
+    p.xaxis.major_label_overrides = {0: "False", 1: "True"}
+    p.yaxis.ticker = [0, 1]
+    p.yaxis.major_label_overrides = {0: "False", 1: "True"}
+    p.title.align = "center"
+    show(p)
 
     if file_name is not None:
-        plot.output_backend = "svg"
-        _ = export_svgs(plot, filename=file_name)
+        p.output_backend = "svg"
+        _ = export_svgs(p, filename=file_name)
 
 
 def plot_histogram_by_class(
-    score_false, score_true, bins=30, model_name=None, file_name=None
+    score_false, score_true, bins=30, class_name=None, model_name=None, file_name=None
 ):
     if not isinstance(bins, Iterable):
         bins = [bins, bins]
+    if class_name is None or not isinstance(class_name, Iterable):
+        class_name = ["False", "True"]
     if model_name is None:
         model_name = ""
     else:
         model_name += ": "
 
-    plot = figure(
+    p = figure(
         plot_width=600,
         plot_height=400,
-        title=f"{model_name}Reconstruction Error Distribution",
-        x_axis_label="Reconstruction Error",
+        title=f"{model_name}Prediction Score Histogram by Class",
+        x_axis_label="Prediction Score",
         y_axis_label="# Samples",
     )
 
     source = ColumnDataSource(data=get_histogram(score_false, bins=bins[0]))
-    plot.quad(
+    p.quad(
         bottom=0.0,
         top="percent",
         left="left",
@@ -137,12 +139,12 @@ def plot_histogram_by_class(
         line_color=None,
         hover_fill_alpha=1.0,
         hover_fill_color="tan",
-        legend_label="Normal Signals",
+        legend_label=class_name[0],
         source=source,
     )
 
     source = ColumnDataSource(data=get_histogram(score_true, bins=bins[1]))
-    plot.quad(
+    p.quad(
         bottom=0.0,
         top="percent",
         left="left",
@@ -152,19 +154,19 @@ def plot_histogram_by_class(
         line_color=None,
         hover_fill_alpha=1.0,
         hover_fill_color="tan",
-        legend_label="Abnormal Signals",
+        legend_label=class_name[1],
         source=source,
     )
 
-    plot.yaxis.formatter = NumeralTickFormatter(format="0 %")
-    plot.y_range.start = 0.0
-    plot.legend.label_text_font_size = "8pt"
-    plot.legend.location = "top_right"
-    plot.legend.click_policy = "hide"
-    plot.title.align = "center"
-    plot.title.text_font_size = "12pt"
+    p.yaxis.formatter = NumeralTickFormatter(format="0 %")
+    p.y_range.start = 0.0
+    p.legend.label_text_font_size = "8pt"
+    p.legend.location = "top_right"
+    p.legend.click_policy = "hide"
+    p.title.align = "center"
+    p.title.text_font_size = "12pt"
 
-    plot.add_tools(
+    p.add_tools(
         HoverTool(
             tooltips=[
                 ("interval", "@interval"),
@@ -173,11 +175,11 @@ def plot_histogram_by_class(
             ]
         )
     )
-    show(plot)
+    show(p)
 
     if file_name is not None:
-        plot.output_backend = "svg"
-        _ = export_svgs(plot, filename=file_name)
+        p.output_backend = "svg"
+        _ = export_svgs(p, filename=file_name)
 
 
 def plot_loss_per_epoch(history, model_name=None, file_name=None):
@@ -186,7 +188,7 @@ def plot_loss_per_epoch(history, model_name=None, file_name=None):
     else:
         model_name += ": "
 
-    plot = figure(
+    p = figure(
         plot_width=600,
         plot_height=400,
         title=f"{model_name}Loss per Epoch",
@@ -201,7 +203,7 @@ def plot_loss_per_epoch(history, model_name=None, file_name=None):
             val_loss=history.history["val_loss"],
         )
     )
-    _ = plot.line(
+    _ = p.line(
         x="index",
         y="loss",
         color="black",
@@ -209,7 +211,7 @@ def plot_loss_per_epoch(history, model_name=None, file_name=None):
         legend_label="Training Loss",
         source=source,
     )
-    _ = plot.line(
+    _ = p.line(
         x="index",
         y="val_loss",
         color="coral",
@@ -218,14 +220,14 @@ def plot_loss_per_epoch(history, model_name=None, file_name=None):
         source=source,
     )
 
-    plot.xgrid.grid_line_color = None
-    plot.legend.label_text_font_size = "8pt"
-    plot.legend.location = "top_right"
-    plot.legend.click_policy = "hide"
-    plot.title.align = "center"
-    plot.title.text_font_size = "12pt"
+    p.xgrid.grid_line_color = None
+    p.legend.label_text_font_size = "8pt"
+    p.legend.location = "top_right"
+    p.legend.click_policy = "hide"
+    p.title.align = "center"
+    p.title.text_font_size = "12pt"
 
-    plot.add_tools(
+    p.add_tools(
         HoverTool(
             tooltips=[
                 ("epoch", "@index"),
@@ -234,11 +236,11 @@ def plot_loss_per_epoch(history, model_name=None, file_name=None):
             ]
         )
     )
-    show(plot)
+    show(p)
 
     if file_name is not None:
-        plot.output_backend = "svg"
-        _ = export_svgs(plot, filename=file_name)
+        p.output_backend = "svg"
+        _ = export_svgs(p, filename=file_name)
 
 
 def plot_pr_curve(pr_curve, auprc, model_name=None, file_name=None):
@@ -247,7 +249,7 @@ def plot_pr_curve(pr_curve, auprc, model_name=None, file_name=None):
     else:
         model_name += ": "
 
-    plot = figure(
+    p = figure(
         plot_width=600,
         plot_height=400,
         title=f"{model_name}Precision - Recall Curve",
@@ -259,7 +261,7 @@ def plot_pr_curve(pr_curve, auprc, model_name=None, file_name=None):
     source["lower_band"] = np.repeat(0.0, source["recall"].shape[0])
     source = ColumnDataSource(source)
 
-    _ = plot.line(
+    _ = p.line(
         x="recall",
         y="precision",
         color="coral",
@@ -276,21 +278,21 @@ def plot_pr_curve(pr_curve, auprc, model_name=None, file_name=None):
         fill_alpha=0.2,
         source=source,
     )
-    plot.add_layout(band)
+    p.add_layout(band)
 
-    plot.xgrid.grid_line_color = None
-    plot.xaxis.formatter = NumeralTickFormatter(format="0%")
-    plot.yaxis.formatter = NumeralTickFormatter(format="0%")
-    plot.legend.label_text_font_size = "8pt"
-    plot.legend.location = "top_right"
-    plot.title.align = "center"
-    plot.title.text_font_size = "12pt"
+    p.xgrid.grid_line_color = None
+    p.xaxis.formatter = NumeralTickFormatter(format="0%")
+    p.yaxis.formatter = NumeralTickFormatter(format="0%")
+    p.legend.label_text_font_size = "8pt"
+    p.legend.location = "top_right"
+    p.title.align = "center"
+    p.title.text_font_size = "12pt"
 
-    show(plot)
+    show(p)
 
     if file_name is not None:
-        plot.output_backend = "svg"
-        _ = export_svgs(plot, filename=file_name)
+        p.output_backend = "svg"
+        _ = export_svgs(p, filename=file_name)
 
 
 def plot_roc_curve(roc_curve, auroc, model_name=None, file_name=None):
@@ -299,7 +301,7 @@ def plot_roc_curve(roc_curve, auroc, model_name=None, file_name=None):
     else:
         model_name += ": "
 
-    plot = figure(
+    p = figure(
         plot_width=600,
         plot_height=400,
         title=f"{model_name}ROC Curve",
@@ -309,7 +311,7 @@ def plot_roc_curve(roc_curve, auroc, model_name=None, file_name=None):
 
     source = ColumnDataSource(dict(zip(["fpr", "tpr", "thr"], roc_curve)))
 
-    _ = plot.line(
+    _ = p.line(
         x="fpr",
         y="tpr",
         color="coral",
@@ -317,18 +319,18 @@ def plot_roc_curve(roc_curve, auroc, model_name=None, file_name=None):
         legend_label=f"AUROC: {auroc:.2%}",
         source=source,
     )
-    _ = plot.line(x="fpr", y="fpr", color="black", line_dash="dashed", source=source)
+    _ = p.line(x="fpr", y="fpr", color="black", line_dash="dashed", source=source)
 
-    plot.xgrid.grid_line_color = None
-    plot.xaxis.formatter = NumeralTickFormatter(format="0%")
-    plot.yaxis.formatter = NumeralTickFormatter(format="0%")
-    plot.legend.label_text_font_size = "8pt"
-    plot.legend.location = "bottom_right"
-    plot.title.align = "center"
-    plot.title.text_font_size = "12pt"
+    p.xgrid.grid_line_color = None
+    p.xaxis.formatter = NumeralTickFormatter(format="0%")
+    p.yaxis.formatter = NumeralTickFormatter(format="0%")
+    p.legend.label_text_font_size = "8pt"
+    p.legend.location = "bottom_right"
+    p.title.align = "center"
+    p.title.text_font_size = "12pt"
 
-    show(plot)
+    show(p)
 
     if file_name is not None:
-        plot.output_backend = "svg"
-        _ = export_svgs(plot, filename=file_name)
+        p.output_backend = "svg"
+        _ = export_svgs(p, filename=file_name)
